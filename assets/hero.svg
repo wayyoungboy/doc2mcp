@@ -1,0 +1,37 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Doc2MCP hero graphic</title>
+  <desc id="desc">A product banner showing documents compiled into an MCP knowledge package.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a"/>
+      <stop offset="0.5" stop-color="#134e4a"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" rx="36" fill="url(#bg)"/>
+  <rect x="86" y="76" width="1108" height="488" rx="30" fill="#f8fafc" fill-opacity="0.1" stroke="#ccfbf1" stroke-opacity="0.2"/>
+  <text x="126" y="176" fill="#f8fafc" font-family="Inter, ui-sans-serif, system-ui" font-size="78" font-weight="850">Doc2MCP</text>
+  <text x="132" y="226" fill="#99f6e4" font-family="Inter, ui-sans-serif, system-ui" font-size="28" font-weight="700">Compile docs into MCP knowledge packages</text>
+  <text x="132" y="282" fill="#e2e8f0" font-family="Inter, ui-sans-serif, system-ui" font-size="23">Build once. Inspect the boundary. Serve narrow tools, resources, prompts, and source-grounded citations.</text>
+
+  <g transform="translate(132 356)">
+    <rect width="250" height="104" rx="18" fill="#042f2e" stroke="#2dd4bf"/>
+    <text x="24" y="42" fill="#ccfbf1" font-family="SFMono-Regular, ui-monospace, Menlo, monospace" font-size="18">docs/</text>
+    <text x="24" y="72" fill="#5eead4" font-family="SFMono-Regular, ui-monospace, Menlo, monospace" font-size="16">api.md runbook.txt</text>
+  </g>
+  <path d="M408 408H510" stroke="#99f6e4" stroke-width="4" stroke-linecap="round"/>
+  <path d="M496 392L512 408L496 424" stroke="#99f6e4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(540 332)">
+    <rect width="280" height="152" rx="20" fill="#fefce8" stroke="#fde68a"/>
+    <text x="28" y="46" fill="#713f12" font-family="Inter, ui-sans-serif, system-ui" font-size="24" font-weight="850">MCP package</text>
+    <text x="28" y="86" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, monospace" font-size="16">doc2mcp.json</text>
+    <text x="28" y="116" fill="#334155" font-family="SFMono-Regular, ui-monospace, Menlo, monospace" font-size="16">index.json + sources</text>
+  </g>
+  <path d="M846 408H948" stroke="#99f6e4" stroke-width="4" stroke-linecap="round"/>
+  <path d="M934 392L950 408L934 424" stroke="#99f6e4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(978 356)">
+    <rect width="174" height="104" rx="18" fill="#ecfdf5" stroke="#86efac"/>
+    <text x="24" y="42" fill="#065f46" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="850">MCP</text>
+    <text x="24" y="72" fill="#047857" font-family="SFMono-Regular, ui-monospace, Menlo, monospace" font-size="15">search/read/cite</text>
+  </g>
+</svg>

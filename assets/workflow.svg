@@ -1,0 +1,29 @@
+<svg width="1120" height="420" viewBox="0 0 1120 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Doc2MCP compiler workflow</title>
+  <desc id="desc">Workflow from importers to package compiler to MCP tools.</desc>
+  <rect width="1120" height="420" rx="28" fill="#f8fafc"/>
+  <text x="56" y="70" fill="#0f172a" font-family="Inter, ui-sans-serif, system-ui" font-size="34" font-weight="850">Package compiler, not another converter</text>
+  <text x="56" y="108" fill="#475569" font-family="Inter, ui-sans-serif, system-ui" font-size="18">Use MarkItDown or Docling upstream, then compile the normalized docs into an MCP-native boundary.</text>
+  <g transform="translate(56 160)">
+    <rect width="230" height="150" rx="18" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="24" y="46" fill="#1d4ed8" font-family="Inter, ui-sans-serif, system-ui" font-size="23" font-weight="800">Import</text>
+    <text x="24" y="86" fill="#334155" font-family="Inter, ui-sans-serif, system-ui" font-size="16">Markdown/text now</text>
+    <text x="24" y="114" fill="#334155" font-family="Inter, ui-sans-serif, system-ui" font-size="16">Docling later</text>
+  </g>
+  <path d="M316 235H412" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+  <path d="M398 220L414 235L398 250" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(440 160)">
+    <rect width="250" height="150" rx="18" fill="#fefce8" stroke="#fde68a"/>
+    <text x="24" y="46" fill="#a16207" font-family="Inter, ui-sans-serif, system-ui" font-size="23" font-weight="800">Compile</text>
+    <text x="24" y="86" fill="#334155" font-family="Inter, ui-sans-serif, system-ui" font-size="16">Manifest, index,</text>
+    <text x="24" y="114" fill="#334155" font-family="Inter, ui-sans-serif, system-ui" font-size="16">sources, citations</text>
+  </g>
+  <path d="M720 235H816" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+  <path d="M802 220L818 235L802 250" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(844 160)">
+    <rect width="220" height="150" rx="18" fill="#ecfdf5" stroke="#bbf7d0"/>
+    <text x="24" y="46" fill="#047857" font-family="Inter, ui-sans-serif, system-ui" font-size="23" font-weight="800">Serve</text>
+    <text x="24" y="86" fill="#334155" font-family="Inter, ui-sans-serif, system-ui" font-size="16">MCP tools, resources,</text>
+    <text x="24" y="114" fill="#334155" font-family="Inter, ui-sans-serif, system-ui" font-size="16">prompts</text>
+  </g>
+</svg>

@@ -1,0 +1,5 @@
+Incident Runbook
+
+If authentication fails, verify token scope first. Then check whether the workspace has disabled external API access.
+
+Escalate to the platform team if error rates stay above 5 percent for ten minutes.
