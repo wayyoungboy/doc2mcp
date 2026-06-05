@@ -1,4 +1,8 @@
+<div align="center">
+
 # Doc2MCP
+
+**Compile docs once. Serve them as a narrow, citation-ready MCP knowledge package.**
 
 ![Doc2MCP hero](assets/hero.svg)
 
@@ -7,7 +11,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-tools%20%2B%20resources%20%2B%20prompts-14b8a6)](docs/THREAT_MODEL.md)
 
-Compile documentation into a portable MCP knowledge package.
+</div>
 
 Doc2MCP is not another document-to-Markdown converter. Use MarkItDown or Docling as importers when you need broad file conversion. Doc2MCP starts after normalization: it builds a reproducible package with source files, section IDs, checksums, citations, resources, tools, and prompts.
 
@@ -16,6 +20,16 @@ doc2mcp build ./docs --out ./dist/my-docs --name my-docs
 doc2mcp search ./dist/my-docs "authentication token"
 doc2mcp serve ./dist/my-docs
 ```
+
+## What You Get
+
+| Output | Why it matters |
+|---|---|
+| `doc2mcp.json` | Package manifest with source metadata, checksums, documents, and sections. |
+| `index.json` | Flattened local index for simple CLI and MCP search. |
+| `sources/` | Original imported files kept for audit and provenance. |
+| MCP tools | `search_docs`, `read_doc`, and `cite_source` for agent workflows. |
+| MCP prompt | `answer_with_citations` to steer answers toward source-backed responses. |
 
 ![Doc2MCP workflow](assets/workflow.svg)
 
