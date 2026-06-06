@@ -115,6 +115,15 @@ doc2mcp show ./dist/product-docs api.md#authentication
 }
 ```
 
+### Claude Code and Codex
+
+Doc2MCP can be launched by both Claude Code and Codex as a local stdio MCP server.
+
+- Claude Code: use a project `.mcp.json` or `claude mcp add product-docs --scope project -- doc2mcp serve /absolute/path/to/dist/product-docs`
+- Codex: add `[mcp_servers.product-docs]` to `~/.codex/config.toml`
+
+See [Agent Integrations](docs/agent-integrations.md) and the sample files in `examples/`.
+
 ## Positioning
 
 | Tool class | Good at | Doc2MCP wedge |

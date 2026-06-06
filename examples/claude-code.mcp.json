@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "product-docs": {
+      "type": "stdio",
+      "command": "doc2mcp",
+      "args": ["serve", "/absolute/path/to/dist/product-docs"]
+    }
+  }
+}

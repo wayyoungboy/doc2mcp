@@ -1,0 +1,3 @@
+[mcp_servers.product-docs]
+command = "doc2mcp"
+args = ["serve", "/absolute/path/to/dist/product-docs"]
