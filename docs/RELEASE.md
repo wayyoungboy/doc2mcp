@@ -19,7 +19,9 @@ Initial open-source MVP.
 
 ```bash
 go test ./...
-go run ./cmd/doc2mcp build testdata/docs --out /tmp/doc2mcp-demo --name demo-docs
-go run ./cmd/doc2mcp search /tmp/doc2mcp-demo "authentication"
-go run ./cmd/doc2mcp show /tmp/doc2mcp-demo api.md#authentication
+go build -o doc2mcp ./cmd/doc2mcp
+./doc2mcp build testdata/docs --out dist/demo-docs --name demo-docs
+./doc2mcp search dist/demo-docs "authentication"
+./doc2mcp search dist/demo-docs "authentication" --json
+./doc2mcp show dist/demo-docs api.md#authentication
 ```
