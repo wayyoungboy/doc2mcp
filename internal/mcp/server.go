@@ -49,11 +49,13 @@ func (s *Server) Handle(req Request) Response {
 				"prompts":   map[string]interface{}{},
 			},
 		})
+	case "notifications/initialized", "initialized":
+		return Response{JSONRPC: "2.0", ID: req.ID}
 	case "tools/list":
 		return ok(req.ID, map[string]interface{}{"tools": []map[string]interface{}{
-			{"name": "search_docs", "description": "Search compiled documentation and return cited sections."},
-			{"name": "read_doc", "description": "Read a compiled documentation section by id."},
-			{"name": "cite_source", "description": "Return citation metadata for a section id."},
+			{"name": "search_docs", "description": "Search compiled documentation and return cited sections.", "inputSchema": map[string]interface{}{"type": "object", "properties": map[string]interface{}{"query": map[string]string{"type": "string", "description": "Search query"}, "limit": map[string]interface{}{"type": "integer", "description": "Maximum number of results", "default": 5}}, "required": []string{"query"}}},
+			{"name": "read_doc", "description": "Read a compiled documentation section by id.", "inputSchema": map[string]interface{}{"type": "object", "properties": map[string]interface{}{"section_id": map[string]string{"type": "string", "description": "Section ID such as api.md#authentication"}}, "required": []string{"section_id"}}},
+			{"name": "cite_source", "description": "Return citation metadata for a section id.", "inputSchema": map[string]interface{}{"type": "object", "properties": map[string]interface{}{"section_id": map[string]string{"type": "string", "description": "Section ID such as api.md#authentication"}}, "required": []string{"section_id"}}},
 		}})
 	case "tools/call":
 		return s.callTool(req)
@@ -162,7 +164,11 @@ func Serve(r io.Reader, w io.Writer, server *Server) error {
 			}
 			continue
 		}
-		if err := encoder.Encode(server.Handle(req)); err != nil {
+		resp := server.Handle(req)
+		if req.ID == nil {
+			continue
+		}
+		if err := encoder.Encode(resp); err != nil {
 			return err
 		}
 	}
