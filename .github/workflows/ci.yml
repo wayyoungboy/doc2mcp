@@ -18,5 +18,11 @@ jobs:
         with:
           go-version: "1.22"
 
+      - name: Build
+        run: go build -o /tmp/doc2mcp ./cmd/doc2mcp
+
       - name: Test
         run: go test ./...
+
+      - name: CLI help
+        run: /tmp/doc2mcp --help

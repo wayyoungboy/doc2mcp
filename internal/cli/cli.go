@@ -15,6 +15,31 @@ import (
 
 const Version = "0.1.0"
 
+const usage = `Doc2MCP - compile docs into an MCP knowledge package
+
+Usage:
+  doc2mcp build <docs-dir> [--out <package-dir>] [--name <name>]
+  doc2mcp search <package-dir> <query> [--limit <n>] [--json]
+  doc2mcp show <package-dir> <section-id>
+  doc2mcp serve <package-dir>
+  doc2mcp version
+  doc2mcp help
+
+Flags:
+  --out <dir>     Package output directory (default: dist/<docs-dir-name>)
+  --name <name>   Package name (default: <docs-dir-name>)
+  --limit <n>     Max search results (default: 5)
+  --json          Print search results as JSON
+  -h, --help      Show help
+  -v, --version   Show version
+
+Examples:
+  doc2mcp build testdata/docs --out dist/demo-docs --name demo-docs
+  doc2mcp search dist/demo-docs "authentication token"
+  doc2mcp search dist/demo-docs "authentication token" --json
+  doc2mcp show dist/demo-docs api.md#authentication
+  doc2mcp serve dist/demo-docs`
+
 func Run(args []string, stdout, stderr io.Writer) int {
 	if len(args) == 0 {
 		help(stdout)
@@ -29,7 +54,7 @@ func Run(args []string, stdout, stderr io.Writer) int {
 		return runShow(args[1:], stdout, stderr)
 	case "serve":
 		return runServe(args[1:], os.Stdin, stdout, stderr)
-	case "version":
+	case "version", "-v", "--version":
 		fmt.Fprintf(stdout, "Doc2MCP %s\n", Version)
 		return 0
 	case "help", "-h", "--help":
@@ -43,13 +68,19 @@ func Run(args []string, stdout, stderr io.Writer) int {
 }
 
 func runBuild(args []string, stdout, stderr io.Writer) int {
+	if hasHelpFlag(args) {
+		fmt.Fprintln(stdout, "Usage: doc2mcp build <docs-dir> [--out <package-dir>] [--name <name>]")
+		return 0
+	}
 	parsed, err := parseOptions(args, map[string]string{"out": "", "name": ""})
 	if err != nil {
 		fmt.Fprintln(stderr, err)
+		fmt.Fprintln(stderr, "Usage: doc2mcp build <docs-dir> [--out <package-dir>] [--name <name>]")
 		return 2
 	}
 	if len(parsed.Positionals) != 1 {
 		fmt.Fprintln(stderr, "build expects one source directory")
+		fmt.Fprintln(stderr, "Usage: doc2mcp build <docs-dir> [--out <package-dir>] [--name <name>]")
 		return 2
 	}
 	out := parsed.Values["out"]
@@ -65,13 +96,19 @@ func runBuild(args []string, stdout, stderr io.Writer) int {
 }
 
 func runSearch(args []string, stdout, stderr io.Writer) int {
+	if hasHelpFlag(args) {
+		fmt.Fprintln(stdout, "Usage: doc2mcp search <package-dir> <query> [--limit <n>] [--json]")
+		return 0
+	}
 	parsed, err := parseOptions(args, map[string]string{"limit": "5", "json": "false"})
 	if err != nil {
 		fmt.Fprintln(stderr, err)
+		fmt.Fprintln(stderr, "Usage: doc2mcp search <package-dir> <query> [--limit <n>] [--json]")
 		return 2
 	}
 	if len(parsed.Positionals) < 2 {
 		fmt.Fprintln(stderr, "search expects package dir and query")
+		fmt.Fprintln(stderr, "Usage: doc2mcp search <package-dir> <query> [--limit <n>] [--json]")
 		return 2
 	}
 	pkg, err := index.Load(parsed.Positionals[0])
@@ -79,7 +116,11 @@ func runSearch(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintln(stderr, err)
 		return 1
 	}
-	limit, _ := strconv.Atoi(parsed.Values["limit"])
+	limit, err := strconv.Atoi(parsed.Values["limit"])
+	if err != nil {
+		fmt.Fprintf(stderr, "invalid --limit %q\n", parsed.Values["limit"])
+		return 2
+	}
 	results := index.Search(pkg, strings.Join(parsed.Positionals[1:], " "), limit)
 	if parsed.Values["json"] == "true" {
 		data, _ := json.MarshalIndent(results, "", "  ")
@@ -93,8 +134,13 @@ func runSearch(args []string, stdout, stderr io.Writer) int {
 }
 
 func runShow(args []string, stdout, stderr io.Writer) int {
+	if hasHelpFlag(args) {
+		fmt.Fprintln(stdout, "Usage: doc2mcp show <package-dir> <section-id>")
+		return 0
+	}
 	if len(args) != 2 {
 		fmt.Fprintln(stderr, "show expects package dir and section id")
+		fmt.Fprintln(stderr, "Usage: doc2mcp show <package-dir> <section-id>")
 		return 2
 	}
 	pkg, err := index.Load(args[0])
@@ -112,8 +158,13 @@ func runShow(args []string, stdout, stderr io.Writer) int {
 }
 
 func runServe(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
+	if hasHelpFlag(args) {
+		fmt.Fprintln(stdout, "Usage: doc2mcp serve <package-dir>")
+		return 0
+	}
 	if len(args) != 1 {
 		fmt.Fprintln(stderr, "serve expects package dir")
+		fmt.Fprintln(stderr, "Usage: doc2mcp serve <package-dir>")
 		return 2
 	}
 	pkg, err := index.Load(args[0])
@@ -150,6 +201,27 @@ func parseOptions(args []string, defaults map[string]string) (parsedOptions, err
 		if _, ok := values[name]; !ok {
 			return parsedOptions{}, fmt.Errorf("unknown flag --%s", name)
 		}
+		if isBoolFlag(defaults[name]) {
+			if inline {
+				parsed, err := parseBool(value)
+				if err != nil {
+					return parsedOptions{}, fmt.Errorf("invalid value for --%s: %w", name, err)
+				}
+				values[name] = parsed
+				continue
+			}
+			if i+1 < len(args) && isBoolLiteral(args[i+1]) {
+				i++
+				parsed, err := parseBool(args[i])
+				if err != nil {
+					return parsedOptions{}, fmt.Errorf("invalid value for --%s: %w", name, err)
+				}
+				values[name] = parsed
+				continue
+			}
+			values[name] = "true"
+			continue
+		}
 		if !inline {
 			if i+1 >= len(args) {
 				return parsedOptions{}, fmt.Errorf("missing value for --%s", name)
@@ -162,6 +234,39 @@ func parseOptions(args []string, defaults map[string]string) (parsedOptions, err
 	return parsedOptions{Values: values, Positionals: positionals}, nil
 }
 
+func isBoolFlag(defaultValue string) bool {
+	return defaultValue == "true" || defaultValue == "false"
+}
+
+func isBoolLiteral(value string) bool {
+	switch strings.ToLower(value) {
+	case "true", "false":
+		return true
+	default:
+		return false
+	}
+}
+
+func parseBool(value string) (string, error) {
+	switch strings.ToLower(value) {
+	case "true":
+		return "true", nil
+	case "false":
+		return "false", nil
+	default:
+		return "", fmt.Errorf("want true or false, got %q", value)
+	}
+}
+
+func hasHelpFlag(args []string) bool {
+	for _, arg := range args {
+		if arg == "-h" || arg == "--help" {
+			return true
+		}
+	}
+	return false
+}
+
 func fallbackName(path string) string {
 	path = strings.TrimRight(path, "/")
 	if path == "" || path == "." {
@@ -172,12 +277,5 @@ func fallbackName(path string) string {
 }
 
 func help(w io.Writer) {
-	fmt.Fprintln(w, `Doc2MCP - compile docs into an MCP knowledge package
-
-Usage:
-  doc2mcp build <docs-dir> --out <package-dir> --name <name>
-  doc2mcp search <package-dir> <query> [--limit 5] [--json true]
-  doc2mcp show <package-dir> <section-id>
-  doc2mcp serve <package-dir>
-  doc2mcp version`)
+	fmt.Fprintln(w, usage)
 }

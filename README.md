@@ -16,10 +16,13 @@
 Doc2MCP is not another document-to-Markdown converter. Use MarkItDown or Docling as importers when you need broad file conversion. Doc2MCP starts after normalization: it builds a reproducible package with source files, section IDs, checksums, citations, resources, tools, and prompts.
 
 ```bash
-doc2mcp build ./docs --out ./dist/my-docs --name my-docs
-doc2mcp search ./dist/my-docs "authentication token"
-doc2mcp serve ./dist/my-docs
+doc2mcp build testdata/docs --out dist/demo-docs --name demo-docs
+doc2mcp search dist/demo-docs "authentication token"
+doc2mcp show dist/demo-docs api.md#authentication
+doc2mcp serve dist/demo-docs
 ```
+
+`doc2mcp --help` prints the same flags.
 
 ## What You Get
 
@@ -69,47 +72,64 @@ Local checkout:
 git clone https://github.com/wayyoungboy/doc2mcp.git
 cd doc2mcp
 go test ./...
-go run ./cmd/doc2mcp build testdata/docs --out /tmp/doc2mcp-demo --name demo-docs
+go build -o doc2mcp ./cmd/doc2mcp
+./doc2mcp build testdata/docs --out dist/demo-docs --name demo-docs
 ```
 
 ## Commands
 
+Flags match `doc2mcp --help`. `--out` and `--name` are optional.
+
 ### Build
 
 ```bash
-doc2mcp build ./docs --out ./dist/product-docs --name product-docs
+doc2mcp build testdata/docs --out dist/demo-docs --name demo-docs
 ```
+
+Defaults if flags are omitted: `--out dist/<docs-dir-name>`, `--name <docs-dir-name>`.
 
 Output:
 
 ```text
-dist/product-docs/
+dist/demo-docs/
   doc2mcp.json
   index.json
   sources/
 ```
 
+Section IDs are `{relative-path}#{heading-slug}`. For `testdata/docs/api.md`, authentication is `api.md#authentication`, not `docs/api.md#authentication`.
+
 ### Search
 
 ```bash
-doc2mcp search ./dist/product-docs "rate limit retry"
-doc2mcp search ./dist/product-docs "rate limit retry" --json true
+doc2mcp search dist/demo-docs "authentication token"
+doc2mcp search dist/demo-docs "authentication token" --limit 3
+doc2mcp search dist/demo-docs "authentication token" --json
 ```
+
+`--json` is a boolean flag. `--json true` and `--json=true` also work.
 
 ### Show
 
 ```bash
-doc2mcp show ./dist/product-docs api.md#authentication
+doc2mcp show dist/demo-docs api.md#authentication
 ```
 
 ### Serve MCP
 
+MCP client configs need an **absolute** package path:
+
+```bash
+realpath dist/demo-docs
+```
+
 ```json
 {
   "mcpServers": {
-    "product-docs": {
+    "demo-docs": {
+      "type": "stdio",
       "command": "doc2mcp",
-      "args": ["serve", "/absolute/path/to/dist/product-docs"]
+      "args": ["serve", "/absolute/path/to/dist/demo-docs"]
     }
   }
 }
@@ -119,8 +139,8 @@ doc2mcp show ./dist/product-docs api.md#authentication
 
 Doc2MCP can be launched by both Claude Code and Codex as a local stdio MCP server.
 
-- Claude Code: use a project `.mcp.json` or `claude mcp add product-docs --scope project -- doc2mcp serve /absolute/path/to/dist/product-docs`
-- Codex: add `[mcp_servers.product-docs]` to `~/.codex/config.toml`
+- Claude Code: use a project `.mcp.json` or `claude mcp add demo-docs --scope project -- doc2mcp serve /absolute/path/to/dist/demo-docs`
+- Codex: add `[mcp_servers.demo-docs]` to `~/.codex/config.toml`
 
 See [Agent Integrations](docs/agent-integrations.md) and the sample files in `examples/`.
 
